@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AL TAHRA - مساعد المتجر</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  direction: rtl;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 620px;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* HEADER */
+#chat-header {
+  background: linear-gradient(135deg, #1A2340, #0F1628);
+  border-bottom: 2px solid #C9A84C;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C9A84C, #E8C97A);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+#header-text h3 { font-size: 15px; font-weight: 700; color: #fff; }
+#header-text p  { font-size: 12px; color: #C9A84C; margin-top: 3px; }
+#status {
+  margin-right: auto;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #aaa;
+}
+#status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; background: #4CAF50;
+}
+
+/* MESSAGES */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8f8f8;
+}
+#messages::-webkit-scrollbar { width: 4px; }
+#messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+.msg { display: flex; gap: 8px; max-width: 85%; }
+.msg.user { align-self: flex-start; flex-direction: row-reverse; }
+.msg.bot  { align-self: flex-end; }
+
+.bubble {
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.msg.user .bubble {
+  background: #1A2340;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.msg.bot .bubble {
+  background: white;
+  color: #222;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.bot-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C9A84C, #E8C97A);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; align-self: flex-end;
+}
+
+/* QUICK REPLIES */
+.quick-replies {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  align-self: flex-end; max-width: 100%;
+}
+.qr-btn {
+  background: white;
+  border: 1.5px solid #C9A84C;
+  color: #1A2340;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.qr-btn:hover { background: #C9A84C; color: #1A2340; }
+
+/* TYPING */
+#typing {
+  display: none;
+  align-self: flex-end;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  gap: 5px;
+  align-items: center;
+}
+.dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #C9A84C;
+  margin: 0 2px;
+  animation: bounce 1.2s infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* INPUT */
+#input-area {
+  border-top: 1px solid #eee;
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: white;
+}
+#user-input {
+  flex: 1;
+  border: 1.5px solid #ddd;
+  border-radius: 22px;
+  padding: 10px 16px;
+  font-size: 14px;
+  resize: none;
+  font-family: inherit;
+  direction: rtl;
+  max-height: 100px;
+  outline: none;
+  line-height: 1.5;
+}
+#user-input:focus { border-color: #C9A84C; }
+#send-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C9A84C, #E8C97A);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform 0.15s;
+}
+#send-btn:hover { transform: scale(1.08); }
+#send-btn svg { width: 18px; height: 18px; fill: #1A2340; }
+</style>
+</head>
+<body>
+<div id="chat-container">
+  <div id="chat-header">
+    <div id="avatar">🌰</div>
+    <div id="header-text">
+      <h3>AL TAHRA</h3>
+      <p>مساعد المتجر الذكي</p>
+    </div>
+    <div id="status">
+      <div id="status-dot"></div>
+      متاح
+    </div>
+  </div>
+
+  <div id="messages">
+    <div class="msg bot">
+      <div class="bot-avatar">🌰</div>
+      <div class="bubble">أهلاً بيك في <strong>AL TAHRA</strong>! 🌰<br>أنا هنا أساعدك في أي حاجة عن منتجاتنا. إيه اللي تحتاجه؟</div>
+    </div>
+    <div class="quick-replies" id="welcome-qr">
+      <button class="qr-btn" onclick="quickReply(this, '🛒 إيه المنتجات المتاحة؟')">🛒 المنتجات</button>
+      <button class="qr-btn" onclick="quickReply(this, '🚚 إيه مناطق التوصيل والشحن؟')">🚚 التوصيل</button>
+      <button class="qr-btn" onclick="quickReply(this, '💳 إيه طرق الدفع المتاحة؟')">💳 الدفع</button>
+      <button class="qr-btn" onclick="quickReply(this, '📞 عايز أتواصل معكم')">📞 تواصل</button>
+    </div>
+  </div>
+  <div id="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+
+  <div id="input-area">
+    <button id="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+    <textarea id="user-input" rows="1" placeholder="اكتب سؤالك هنا..."></textarea>
+  </div>
+</div>
+
+<script>
+// ← غيّر ده بـ URL بتاع Vercel بعد الـ deploy
+const API_URL = "https://YOUR_PROJECT.vercel.app/chat";
+
+const messagesEl = document.getElementById('messages');
+const typingEl  = document.getElementById('typing');
+const inputEl   = document.getElementById('user-input');
+let history = [];
+
+function addMessage(text, role) {
+  const msg = document.createElement('div');
+  msg.className = `msg ${role === 'user' ? 'user' : 'bot'}`;
+  if (role !== 'user') {
+    const av = document.createElement('div');
+    av.className = 'bot-avatar'; av.textContent = '🌰';
+    msg.appendChild(av);
+  }
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  msg.appendChild(bubble);
+  messagesEl.appendChild(msg);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function showTyping(show) {
+  typingEl.style.display = show ? 'flex' : 'none';
+  if (show) messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function quickReply(btn, text) {
+  btn.closest('.quick-replies').remove();
+  handleInput(text);
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  handleInput(text);
+}
+
+async function handleInput(text) {
+  addMessage(text, 'user');
+  history.push({ role: 'user', content: text });
+  showTyping(true);
+  document.getElementById('send-btn').disabled = true;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history })
+    });
+    const data = await res.json();
+    const reply = data.reply || 'عذراً، حدث خطأ.';
+    history.push({ role: 'assistant', content: reply });
+    showTyping(false);
+    addMessage(reply, 'bot');
+  } catch(e) {
+    showTyping(false);
+    addMessage('معلش، في مشكلة في الاتصال. جرب تاني 🙏', 'bot');
+  }
+
+  document.getElementById('send-btn').disabled = false;
+}
+
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = inputEl.scrollHeight + 'px';
+});
+</script>
+</body>
+</html>
