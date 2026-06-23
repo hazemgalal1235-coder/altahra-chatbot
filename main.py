@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List
 import httpx
@@ -43,9 +44,13 @@ class ChatRequest(BaseModel):
     messages: List[Message]
 
 
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "altahra-chatbot"}
+
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "altahra-chatbot"}
+    return FileResponse("index.html")
 
 
 @app.post("/chat")
