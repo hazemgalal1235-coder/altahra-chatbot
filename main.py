@@ -66,7 +66,7 @@ async def chat(request: ChatRequest):
                 "Authorization": f"Bearer {GROQ_API_KEY}",
             },
             json={
-                "model": "llama-3.3-70b-versatile",
+                "model": "llama3-70b-8192",
                 "messages": messages,
                 "temperature": 0.5,
                 "max_tokens": 500,
